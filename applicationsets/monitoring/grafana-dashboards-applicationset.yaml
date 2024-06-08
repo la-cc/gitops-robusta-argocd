@@ -25,7 +25,7 @@ spec:
     spec:
       project: default
       sources:
-        - repoURL: git@github.com:la-cc/gitops-robusta-argocd.git
+        - repoURL: https://github.com/la-cc/gitops-robusta-argocd.git
           targetRevision: "{{values.branch}}"
           path: "./kubernetes-service-catalog/kustomize/monitoring/grafana/dashboards"
       destination:

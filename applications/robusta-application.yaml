@@ -6,7 +6,7 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: git@github.com:la-cc/gitops-robusta-argocd.git
+    repoURL: https://github.com/la-cc/gitops-robusta-argocd.git
     targetRevision: main
     path: ./helm/monitoring/robusta
     helm:
