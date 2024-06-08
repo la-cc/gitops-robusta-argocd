@@ -1,0 +1,70 @@
+robusta:
+  clusterName: aks-excelsior-development
+  globalConfig:
+    chat_gpt_token: "{{ env.CHAT_GPT_TOKEN }}"
+    signing_key: "{{ env.SIGNING_KEY }}"
+    account_id: "{{ env.ACCOUNT_ID }}"
+  sinksConfig:
+    - slack_sink:
+        name: main_slack_sink
+        slack_channel: robusta-aks-excelsior-dev
+        api_key: "{{ env.SLACK_API_KEY }}"
+    - robusta_sink:
+        name: robusta_ui_sink
+        token: "{{ env.ROBUSTA_UI_TOKEN }}"
+    - ms_teams_sink:
+        name: main_ms_teams_sink
+        webhook_url: "{{ env.MS_TEAMS_WEBHOOK_URL }}"
+  enablePrometheusStack: true
+  enablePlatformPlaybooks: true
+  runner:
+    sendAdditionalTelemetry: false
+    additional_env_vars:
+      - name: CHAT_GPT_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: robusta-secrets
+            key: secret_chat_gpt_token_key
+      - name: ROBUSTA_UI_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: robusta-secrets
+            key: secret_robusta_ui_token_key
+      - name: MS_TEAMS_WEBHOOK_URL
+        valueFrom:
+          secretKeyRef:
+            name: robusta-secrets
+            key: secret_ms_teams_webhook_url_key
+      - name: SLACK_API_KEY
+        valueFrom:
+          secretKeyRef:
+            name: robusta-secrets
+            key: secret_slack_api_key
+      - name: SIGNING_KEY
+        valueFrom:
+          secretKeyRef:
+            name: robusta-secrets
+            key: secret_signing_key
+      - name: ACCOUNT_ID
+        valueFrom:
+          secretKeyRef:
+            name: robusta-secrets
+            key: secret_account_id_key
+  # This part is added to the default generated_values.yaml
+  playbookRepos:
+    chatgpt_robusta_actions:
+      url: "https://github.com/robusta-dev/kubernetes-chatgpt-bot.git"
+
+  # This part is added to the default generated_values.yaml
+  customPlaybooks:
+    # Add the 'Ask ChatGPT' button to all Prometheus alerts
+    - triggers:
+        - on_prometheus_alert: {}
+      actions:
+        - chat_gpt_enricher: {}
+  kube-prometheus-stack:
+    grafana:
+      admin:
+        existingSecret: "grafana-admin-credentials"
+        userKey: admin-user
+        passwordKey: admin-password

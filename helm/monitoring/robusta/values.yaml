@@ -1,0 +1,5 @@
+robusta:
+  enablePrometheusStack: true
+  disableCloudRouting: true
+  runner:
+    sendAdditionalTelemetry: false

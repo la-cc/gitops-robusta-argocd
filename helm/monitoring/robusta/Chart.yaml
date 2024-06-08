@@ -1,0 +1,8 @@
+apiVersion: v2
+name: robusta
+version: 1.0.0
+description: This Chart deploys robusta.
+dependencies:
+  - name: robusta
+    version: 0.13.1
+    repository: https://robusta-charts.storage.googleapis.com

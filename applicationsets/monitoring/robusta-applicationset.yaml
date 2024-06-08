@@ -1,0 +1,53 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: robusta
+  namespace: argocd
+spec:
+  generators:
+    - clusters:
+        selector:
+          matchLabels:
+            env: dev
+        values:
+          branch: main
+    - clusters:
+        selector:
+          matchLabels:
+            env: prod
+        values:
+          branch: main
+  template:
+    metadata:
+      name: "{{name}}-robusta"
+      annotations:
+        argocd.argoproj.io/manifest-generate-paths: ".;.."
+    spec:
+      project: default
+      sources:
+        - repoURL: git@github.com:la-cc/gitops-robusta-argocd.git
+          targetRevision: "{{values.branch}}"
+          ref: valuesRepo
+        # - repoURL: git@github.com:la-cc/gitops-robusta-argocd.git
+        #   targetRevision: "{{values.branch}}"
+        #   path: "./cluster/{{name}}/monitoring/robusta/secrets"
+        - repoURL: git@github.com:la-cc/gitops-robusta-argocd.git
+          targetRevision: "{{values.branch}}"
+          path: "./helm/monitoring/robusta"
+          helm:
+            releaseName: "robusta" # Release name override (defaults to application name)
+            valueFiles:
+              - "values.yaml"
+              - "$valuesRepo/cluster/{{name}}/monitoring/robusta/values.yaml"
+      destination:
+        name: "{{name}}"
+        namespace: "monitoring"
+      syncPolicy:
+        automated:
+          prune: false
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true
+        retry:
+          limit: 5

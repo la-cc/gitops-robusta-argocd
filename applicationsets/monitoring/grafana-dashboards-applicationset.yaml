@@ -1,0 +1,42 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: grafana-dashboards
+  namespace: argocd
+spec:
+  generators:
+    - clusters:
+        selector:
+          matchLabels:
+            env: staging
+        values:
+          branch: main
+    - clusters:
+        selector:
+          matchLabels:
+            env: prod
+        values:
+          branch: main
+  template:
+    metadata:
+      name: "{{name}}-grafana-dashboards"
+      annotations:
+        argocd.argoproj.io/manifest-generate-paths: ".;.."
+    spec:
+      project: default
+      sources:
+        - repoURL: git@github.com:la-cc/gitops-robusta-argocd.git
+          targetRevision: "{{values.branch}}"
+          path: "./kubernetes-service-catalog/kustomize/monitoring/grafana/dashboards"
+      destination:
+        name: "{{name}}"
+        namespace: "monitoring"
+      syncPolicy:
+        automated:
+          prune: false
+          selfHeal: true
+        syncOptions:
+          - CreateNamespace=true
+          - ServerSideApply=true
+        retry:
+          limit: 5
