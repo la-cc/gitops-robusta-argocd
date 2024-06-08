@@ -1,5 +1,5 @@
 robusta:
   enablePrometheusStack: true
-  disableCloudRouting: true
+  disableCloudRouting: false
   runner:
     sendAdditionalTelemetry: false

@@ -13,9 +13,9 @@ spec:
       releaseName: robusta
       valueFiles:
         - values.yaml
-        - $valuesRepo/cluster/in-cluster/monitoring/robusta/values.yaml
+        - ./../../../cluster/in-cluster/monitoring/robusta/values.yaml
   destination:
-    name: dev
+    name: in-cluster
     namespace: monitoring
   syncPolicy:
     automated:
