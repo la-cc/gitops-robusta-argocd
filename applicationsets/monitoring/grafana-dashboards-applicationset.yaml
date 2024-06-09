@@ -30,7 +30,7 @@ spec:
           path: "./kubernetes-service-catalog/kustomize/monitoring/grafana/dashboards"
       destination:
         name: "{{name}}"
-        namespace: "monitoring"
+        namespace: robusta
       syncPolicy:
         automated:
           prune: false

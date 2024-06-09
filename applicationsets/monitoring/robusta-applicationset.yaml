@@ -41,7 +41,7 @@ spec:
               - "$valuesRepo/cluster/{{name}}/monitoring/robusta/values.yaml"
       destination:
         name: "{{name}}"
-        namespace: "monitoring"
+        namespace: robusta
       syncPolicy:
         automated:
           prune: false

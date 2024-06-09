@@ -16,7 +16,7 @@ spec:
         - ./../../../cluster/in-cluster/monitoring/robusta/values.yaml
   destination:
     name: in-cluster
-    namespace: monitoring
+    namespace: robusta
   syncPolicy:
     automated:
       prune: false
